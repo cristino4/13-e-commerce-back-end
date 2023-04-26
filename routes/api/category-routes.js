@@ -8,7 +8,7 @@ router.get('/', async (req, res) => {
   // be sure to include its associated Products
   try {
     const data = await Category.findAll();
-    res.send(data); 
+    res.status(200).json(data);
   } catch (error) {
     res.status(400).json(error);
   }
@@ -31,21 +31,47 @@ router.get('/:id', async (req, res) => {
 
 router.post('/', async (req, res) => {
   // create a new category
+  /* Body should look like
+  {
+    category_name: XXXXX
+  }
+  */
   try {
-    await Category.create({
+    const response  = await Category.create({
       category_name: req.body.category_name
     })
+    res.status(200).json(response);
   } catch (error) {
-    
-  }
+    res.status(400).json(error);
+  };
 });
 
-router.put('/:id', (req, res) => {
+router.put('/:id', async (req, res) => {
   // update a category by its `id` value
+  try {
+    const response = await Category.update(req.body, {
+      where: {
+        id: req.params.id,
+      },
+    })
+    res.status(200).json(response)
+  } catch (error) {
+    res.status(400).json(error);
+  };
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', async (req, res) => {
   // delete a category by its `id` value
+  try {
+    const result = await Category.destroy({
+      where:{
+        id: req.params.id
+      }
+    })
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(400).json(error);
+  }
 });
 
 module.exports = router;
